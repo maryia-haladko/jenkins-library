@@ -10,7 +10,7 @@ RUN go test ./... -tags=unit -cover
 # with `-tags release` we ensure that shared test utilities won't end up in the binary
 RUN export GIT_COMMIT=$(git rev-parse HEAD) && \
     export GIT_REPOSITORY=$(git config --get remote.origin.url) && \
-    CGO_ENABLED=0 go build \
+    GOARCH=amd64 CGO_ENABLED=0 go build \
         -ldflags \
             "-X github.com/SAP/jenkins-library/cmd.GitCommit=${GIT_COMMIT} \
             -X github.com/SAP/jenkins-library/pkg/log.LibraryRepository=${GIT_REPOSITORY} \
