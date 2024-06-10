@@ -158,7 +158,7 @@ func runArtifactPrepareVersion(config *artifactPrepareVersionOptions, telemetryD
 	commonPipelineEnvironment.git.headCommitID = gitCommitID
 	newVersion := version
 	now := time.Now()
-
+	log.Entry().Infof(">>> versionType '%v'", config.VersioningType)
 	if config.VersioningType == "cloud" || config.VersioningType == "cloud_noTag" {
 		// make sure that versioning does not create tags (when set to "cloud")
 		// for PR pipelines, optimized pipelines (= no build)
@@ -496,7 +496,7 @@ func calculateCloudVersion(artifact versioning.Artifact, config *artifactPrepare
 
 func propagateVersion(config *artifactPrepareVersionOptions, utils artifactPrepareVersionUtils, artifactOpts *versioning.Options, version, gitCommitID string, now time.Time) error {
 	var err error
-
+	log.Entry().Infof(">>>>propagate additional version ")
 	if len(config.AdditionalTargetDescriptors) > 0 && len(config.AdditionalTargetTools) != len(config.AdditionalTargetDescriptors) {
 		log.SetErrorCategory(log.ErrorConfiguration)
 		return fmt.Errorf("additionalTargetDescriptors cannot have a different number of entries than additionalTargetTools")
@@ -522,6 +522,7 @@ func propagateVersion(config *artifactPrepareVersionOptions, utils artifactPrepa
 
 		for _, buildDescriptor := range buildDescriptors {
 			targetArtifact, err := versioning.GetArtifact(targetTool, buildDescriptor, artifactOpts, utils)
+			log.Entry().Infof(">>> target artifact '%v'", targetArtifact)
 			if err != nil {
 				log.SetErrorCategory(log.ErrorConfiguration)
 				return fmt.Errorf("failed to retrieve artifact: %w", err)
@@ -535,6 +536,7 @@ func propagateVersion(config *artifactPrepareVersionOptions, utils artifactPrepa
 					return err
 				}
 			}
+			log.Entry().Infof(">>> descriptor version '%v'", descriptorVersion)
 			err = targetArtifact.SetVersion(descriptorVersion)
 			if err != nil {
 				return fmt.Errorf("failed to set additional target version for '%v': %w", targetTool, err)
