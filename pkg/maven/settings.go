@@ -117,8 +117,10 @@ func UpdateActiveProfileInSettingsXML(newActiveProfiles []string, utils Settings
 		}
 
 		settingsXmlString := string(settingsXml)
+		log.Entry().Infof("Before : '%s'", settingsXmlString)
 		Replacer := strings.NewReplacer("&#xA;", "", "&#x9;", "")
 		settingsXmlString = Replacer.Replace(settingsXmlString)
+		log.Entry().Infof("After : '%s'", settingsXmlString)
 		xmlstring := []byte(xml.Header + settingsXmlString)
 
 		if err = utils.FileWrite(settingsFile, xmlstring, 0777); err != nil {
