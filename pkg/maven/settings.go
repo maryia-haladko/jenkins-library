@@ -196,7 +196,7 @@ func addServerTagtoProjectSettingsXML(projectSettingsFile string, altDeploymentR
 	if err != nil {
 		return fmt.Errorf("failed to unmarshal settings xml file '%v': %w", projectSettingsFile, err)
 	}
-
+	log.Entry().Infof("Before adding staging server: '%+v'", projectSettings.Servers)
 	if len(projectSettings.Servers.ServerType) == 0 {
 		projectSettings.Xsi = "http://www.w3.org/2001/XMLSchema-instance"
 		projectSettings.SchemaLocation = "http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd"
@@ -216,14 +216,16 @@ func addServerTagtoProjectSettingsXML(projectSettingsFile string, altDeploymentR
 		projectSettings.Servers.ServerType = append(projectSettings.Servers.ServerType, stagingServer)
 	}
 
+	log.Entry().Infof("Before MarshalIndent: '%+v'", projectSettings.Servers)
 	settingsXml, err := xml.MarshalIndent(projectSettings, "", "    ")
 	if err != nil {
 		return fmt.Errorf("failed to marshal maven project settings xml: %w", err)
 	}
 	settingsXmlString := string(settingsXml)
+	log.Entry().Infof("Before special characters replacement: '%s'", settingsXmlString)
 	Replacer := strings.NewReplacer("&#xA;", "", "&#x9;", "")
 	settingsXmlString = Replacer.Replace(settingsXmlString)
-    log.Entry().Infof("After : '%s'", settingsXmlString)
+	log.Entry().Infof("After : '%s'", settingsXmlString)
 	xmlstring := []byte(xml.Header + settingsXmlString)
 
 	if err = utils.FileWrite(projectSettingsFile, xmlstring, 0777); err != nil {
