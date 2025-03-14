@@ -187,6 +187,7 @@ func UpdateProjectSettingsXML(projectSettingsFile string, altDeploymentRepositor
 func addServerTagtoProjectSettingsXML(projectSettingsFile string, altDeploymentRepositoryID string, altDeploymentRepositoryUser string, altDeploymentRepositoryPassword string, utils SettingsDownloadUtils) error {
 	var projectSettings Settings
 	settingsXMLContent, err := utils.FileRead(projectSettingsFile)
+	log.Entry().Infof("Before : '%s'", settingsXMLContent)
 	if err != nil {
 		return fmt.Errorf("failed to read file '%v': %w", projectSettingsFile, err)
 	}
@@ -222,7 +223,7 @@ func addServerTagtoProjectSettingsXML(projectSettingsFile string, altDeploymentR
 	settingsXmlString := string(settingsXml)
 	Replacer := strings.NewReplacer("&#xA;", "", "&#x9;", "")
 	settingsXmlString = Replacer.Replace(settingsXmlString)
-
+    log.Entry().Infof("After : '%s'", settingsXmlString)
 	xmlstring := []byte(xml.Header + settingsXmlString)
 
 	if err = utils.FileWrite(projectSettingsFile, xmlstring, 0777); err != nil {
