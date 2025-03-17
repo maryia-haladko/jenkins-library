@@ -5,14 +5,26 @@ import (
 )
 
 type Server struct {
-	ID                   string `xml:"id,omitempty"`
-	Username             string `xml:"username,omitempty"`
-	Password             string `xml:"password,omitempty"`
-	PrivateKey           string `xml:"privateKey,omitempty"`
-	Passphrase           string `xml:"passphrase,omitempty"`
-	FilePermissions      string `xml:"filePermissions,omitempty"`
-	DirectoryPermissions string `xml:"directoryPermissions,omitempty"`
-	Configuration        string `xml:"configuration,omitempty"`
+	ID                   string        `xml:"id,omitempty"`
+	Username             string        `xml:"username,omitempty"`
+	Password             string        `xml:"password,omitempty"`
+	PrivateKey           string        `xml:"privateKey,omitempty"`
+	Passphrase           string        `xml:"passphrase,omitempty"`
+	FilePermissions      string        `xml:"filePermissions,omitempty"`
+	DirectoryPermissions string        `xml:"directoryPermissions,omitempty"`
+	Configuration        Configuration `xml:"configuration,omitempty"`
+}
+
+type Configuration struct {
+	HttpHeaders HttpHeaders `xml:"httpHeaders,omitempty"`
+}
+type HttpHeaders struct {
+	Property Property `xml:"property,omitempty"`
+}
+
+type Property struct {
+	Name  string `xml:"name,omitempty"`
+	Value string `xml:"value,omitempty"`
 }
 
 type ServersType struct {
