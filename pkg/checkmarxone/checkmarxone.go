@@ -21,7 +21,7 @@ import (
 
 // ReportsDirectory defines the subfolder for the Checkmarx reports which are generated
 const ReportsDirectory = "checkmarxOne"
-const cxOrigin = "GolangScript"
+const cxOrigin = ""
 
 // AuthToken - Structure to store OAuth2 token
 // Updated for Cx1
@@ -653,6 +653,15 @@ func (sys *SystemInstance) UpdateApplication(app *Application) error {
 func (sys *SystemInstance) UpdateProject(project *Project) error {
 	sys.logger.Debugf("Updating project: %v", project.Name)
 	jsonBody, err := json.Marshal(*project)
+
+	// Remove fields that can cause API errors in Cx1 3.30
+	var filteredMap map[string]interface{}
+	json.Unmarshal(jsonBody, &filteredMap)
+	delete(filteredMap, "applicationIds")
+	delete(filteredMap, "createdAt")
+	delete(filteredMap, "updatedAt")
+	jsonBody, err = json.Marshal(filteredMap)
+
 	if err != nil {
 		return err
 	}
